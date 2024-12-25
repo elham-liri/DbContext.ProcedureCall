@@ -55,6 +55,7 @@
     <Compile Include="IProcedureInputConvertible.cs" />
     <Compile Include="IProcedureProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpHelperDbContext.cs" />
     <Compile Include="utility\GenericExtension.cs" />
     <Compile Include="utility\StringExtension.cs" />
   </ItemGroup>

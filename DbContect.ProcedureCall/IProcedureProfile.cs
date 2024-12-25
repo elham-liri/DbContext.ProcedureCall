@@ -6,7 +6,7 @@ namespace EF.StoreProcedureHelper
     /// <summary>
     /// Use to build a profile for a stored procedure
     /// </summary>
-    public interface IProcedureProfile
+    public interface IProcedureProfile : IDisposable
     {
         /// <summary>
         /// Stored procedure's name
