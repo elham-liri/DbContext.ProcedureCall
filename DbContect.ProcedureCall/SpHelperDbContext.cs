@@ -10,74 +10,183 @@ namespace EF.StoreProcedureHelper
 {
     public class SpHelperDbContext : DbContext
     {
+        /// <summary>
+        /// Executes a stored procedure with no output
+        /// </summary>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <exception cref="Exception">exception</exception>
         public void CallProcedure(IProcedureProfile profile, IProcedureInputConvertible input)
         {
-            profile.FillParameters(input);
-            if (profile.ResultSet == 0)
-                CallVoidProcedure($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters());
+            try
+            {
+                profile.FillParameters(input);
+                if (profile.ResultSet == 0)
+                    CallVoidProcedure($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
+        /// <summary>
+        /// Executes a stored procedure which returns a single set of records
+        /// </summary>
+        /// <typeparam name="T">type of output</typeparam>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <param name="resetResultSet">reset number of result sets to default</param>
+        /// <returns>List of records</returns>
+        /// <exception cref="Exception">exception</exception>
         public IList<T> CallProcedure<T>(IProcedureProfile profile, IProcedureInputConvertible input, bool resetResultSet = false)
         {
-            profile.FillParameters(input);
+            try
+            {
+                profile.FillParameters(input);
 
-            if (resetResultSet)
-                profile.SetResultSetCount(1);
+                if (resetResultSet)
+                    profile.SetResultSetCount(1);
 
-            var result = profile.ResultSet == 1
-              ? GetRows<T>($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters())
-              : new List<T>();
+                var result = profile.ResultSet == 1
+                  ? GetRows<T>($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters())
+                  : new List<T>();
 
-            profile.Dispose();
-            return result;
+                profile.Dispose();
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
-        public Tuple<List<T>, List<TM>> CallProcedure<T, TM>(IProcedureProfile profile, IProcedureInputConvertible input, int timeOutMin,
+        /// <summary>
+        /// Executes a stored procedure which returns double sets of records
+        /// </summary>
+        /// <typeparam name="T">type of first result set</typeparam>
+        /// <typeparam name="TM">type of second result set</typeparam>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <param name="timeoutMin">Minutes to wait for execution </param>
+        /// <param name="resetResultSet">reset number of result sets to default</param>
+        /// <returns>two lists of records</returns>
+        /// <exception cref="Exception">exception</exception>
+        public Tuple<List<T>, List<TM>> CallProcedure<T, TM>(IProcedureProfile profile, IProcedureInputConvertible input, int timeoutMin,
           bool resetResultSet = false)
         {
-            profile.FillParameters(input);
+            try
+            {
+                profile.FillParameters(input);
 
-            if (resetResultSet)
-                profile.SetResultSetCount(2);
+                if (resetResultSet)
+                    profile.SetResultSetCount(2);
 
-            return profile.ResultSet == 2
-              ? GetDoubleRowSet<T, TM>(profile.Name, timeOutMin, profile.GetParameters())
-              : new Tuple<List<T>, List<TM>>(new List<T>(), new List<TM>());
+                return profile.ResultSet == 2
+                  ? GetDoubleRowSet<T, TM>(profile.Name, timeoutMin, profile.GetParameters())
+                  : new Tuple<List<T>, List<TM>>(new List<T>(), new List<TM>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
-
+        
+        /// <summary>
+        /// Executes a stored procedure which returns triple sets of records
+        /// </summary>
+        /// <typeparam name="T">type of first result set</typeparam>
+        /// <typeparam name="TM">type of second result set</typeparam>
+        /// <typeparam name="TN">type of third result set</typeparam>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <param name="timeoutMin">Minutes to wait for execution </param>
+        /// <param name="resetResultSet">reset number of result sets to default</param>
+        /// <returns>Three lists of records</returns>
+        /// <exception cref="Exception">exception</exception>
         public Tuple<List<T>, List<TM>, List<TN>> CallProcedure<T, TM, TN>(IProcedureProfile profile,
-          IProcedureInputConvertible input, int timeOutMin, bool resetResultSet = false)
+          IProcedureInputConvertible input, int timeoutMin, bool resetResultSet = false)
         {
-            profile.FillParameters(input);
+            try
+            {
+                profile.FillParameters(input);
 
-            if (resetResultSet)
-                profile.SetResultSetCount(3);
+                if (resetResultSet)
+                    profile.SetResultSetCount(3);
 
-            return profile.ResultSet == 3
-              ? GetTripleRowSet<T, TM, TN>(profile.Name, timeOutMin, profile.GetParameters())
-              : new Tuple<List<T>, List<TM>, List<TN>>(new List<T>(), new List<TM>(), new List<TN>());
+                return profile.ResultSet == 3
+                  ? GetTripleRowSet<T, TM, TN>(profile.Name, timeoutMin, profile.GetParameters())
+                  : new Tuple<List<T>, List<TM>, List<TN>>(new List<T>(), new List<TM>(), new List<TN>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
+        /// <summary>
+        /// Executes a stored procedure with no output asynchronously
+        /// </summary>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <exception cref="Exception">exception</exception>
         public async Task CallProcedureAsync(IProcedureProfile profile, IProcedureInputConvertible input)
         {
-            profile.FillParameters(input);
-            if (profile.ResultSet == 0)
-                await CallVoidProcedureAsync($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters());
+            try
+            {
+                profile.FillParameters(input);
+                if (profile.ResultSet == 0)
+                    await CallVoidProcedureAsync($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
-        public async Task CallProcedureAsync(IProcedureProfile profile, IProcedureInputConvertible input, int timeOutMin)
+        /// <summary>
+        /// Executes a stored procedure with no output asynchronously
+        /// </summary>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <param name="timeoutMin">Minutes to wait for execution </param>
+        /// <returns></returns>
+        /// <exception cref="Exception">exception</exception>
+        public async Task CallProcedureAsync(IProcedureProfile profile, IProcedureInputConvertible input, int timeoutMin)
         {
-            profile.FillParameters(input);
-            if (profile.ResultSet == 0)
-                await CallVoidProcedureAsync($"{profile.Name}", timeOutMin, profile.GetParameters());
+            try
+            {
+                profile.FillParameters(input);
+                if (profile.ResultSet == 0)
+                    await CallVoidProcedureAsync($"{profile.Name}", timeoutMin, profile.GetParameters());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
+        /// <summary>
+        /// Executes a stored procedure which returns a single set of records asynchronously
+        /// </summary>
+        /// <typeparam name="T">type of output</typeparam>
+        /// <param name="profile">stored procedure's profile</param>
+        /// <param name="input">object which contains input parameters' values</param>
+        /// <returns>List of records</returns>
+        /// <exception cref="Exception">exception</exception>
         public async Task<IList<T>> CallProcedureAsync<T>(IProcedureProfile profile, IProcedureInputConvertible input)
         {
-            profile.FillParameters(input);
-            return profile.ResultSet == 1
-              ? await GetRowsAsync<T>($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters())
-              : new List<T>();
+            try
+            {
+                profile.FillParameters(input);
+                return profile.ResultSet == 1
+                  ? await GetRowsAsync<T>($"{profile.Name} {profile.GetParameterNames()}", profile.GetParameters())
+                  : new List<T>();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
+            }
         }
 
 
@@ -96,7 +205,7 @@ namespace EF.StoreProcedureHelper
             return await Database.SqlQuery<T>(sql, parameters).ToListAsync();
         }
 
-        public Tuple<List<T>, List<TM>> GetDoubleRowSet<T, TM>(string spName, int timeOutMin, params object[] parameters)
+        public Tuple<List<T>, List<TM>> GetDoubleRowSet<T, TM>(string spName, int timeoutMin, params object[] parameters)
         {
 
             using (var cmd = Database.Connection.CreateCommand())
@@ -105,7 +214,7 @@ namespace EF.StoreProcedureHelper
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddRange(parameters);
-                cmd.CommandTimeout = timeOutMin * 60;
+                cmd.CommandTimeout = timeoutMin * 60;
                 if (Database.Connection.State != ConnectionState.Open)
                     Database.Connection.Open();
 
@@ -123,7 +232,7 @@ namespace EF.StoreProcedureHelper
 
         }
 
-        public Tuple<List<T>, List<TM>, List<TN>> GetTripleRowSet<T, TM, TN>(string spName, int timeOutMin, params object[] parameters)
+        public Tuple<List<T>, List<TM>, List<TN>> GetTripleRowSet<T, TM, TN>(string spName, int timeoutMin, params object[] parameters)
         {
             using (var cmd = Database.Connection.CreateCommand())
             {
@@ -131,7 +240,7 @@ namespace EF.StoreProcedureHelper
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddRange(parameters);
-                cmd.CommandTimeout = timeOutMin * 60;
+                cmd.CommandTimeout = timeoutMin * 60;
 
                 if (Database.Connection.State != ConnectionState.Open)
                     Database.Connection.Open();
@@ -158,7 +267,7 @@ namespace EF.StoreProcedureHelper
             await Database.ExecuteSqlCommandAsync(sqlQuery, parameters);
         }
 
-        public async Task CallVoidProcedureAsync(string spName, int timeOutMin, params object[] parameters)
+        public async Task CallVoidProcedureAsync(string spName, int timeoutMin, params object[] parameters)
         {
             using (var cmd = Database.Connection.CreateCommand())
             {
@@ -166,7 +275,7 @@ namespace EF.StoreProcedureHelper
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Clear();
                 cmd.Parameters.AddRange(parameters);
-                cmd.CommandTimeout = timeOutMin * 60; 
+                cmd.CommandTimeout = timeoutMin * 60;
 
                 if (Database.Connection.State != ConnectionState.Open)
                     await Database.Connection.OpenAsync();
