@@ -8,8 +8,8 @@
     <ProjectGuid>{2B3F6A64-AC09-48E0-8D9E-03FF3DE0B03E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DbContext.ProcedureCall</RootNamespace>
-    <AssemblyName>DbContext.ProcedureCall</AssemblyName>
+    <RootNamespace>EF.StoreProcedureHelper</RootNamespace>
+    <AssemblyName>EF.StoreProcedureHelper</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -51,17 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseProcedureProfile.cs" />
     <Compile Include="IProcedureInputConvertible.cs" />
     <Compile Include="IProcedureProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utility\GenericExtension.cs" />
+    <Compile Include="utility\StringExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="utility\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

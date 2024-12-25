@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbContext.ProcedureCall", "DbContect.ProcedureCall\DbContext.ProcedureCall.csproj", "{2B3F6A64-AC09-48E0-8D9E-03FF3DE0B03E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EF.StoreProcedureHelper", "DbContect.ProcedureCall\EF.StoreProcedureHelper.csproj", "{2B3F6A64-AC09-48E0-8D9E-03FF3DE0B03E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
